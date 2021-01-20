@@ -1,0 +1,114 @@
+float = @{ int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
+int = { ("+" | "-")? ~ ASCII_DIGIT+ }
+ufloat = @{ uint ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
+uint = { ASCII_DIGIT+ }
+uint_array = _{
+    "["
+    ~
+    uint
+    ~ (
+        ","
+        ~
+        uint
+    )*
+    ~
+    "]"
+}
+bool = { "{t}" | "{f}" }
+tetrahedron = { "T" }
+hexahedron = { "C" }
+octahedron = { "O" }
+dodecahedron = { "D" }
+icosahedron = { "I" }
+base_shape = _{ tetrahedron | hexahedron | octahedron | dodecahedron | icosahedron }
+separator = { "," }
+ambo = { "a" ~ (ufloat)? }
+// bevel ui_vertex_degree
+bevel = { "b" ~ (uint | uint_array)? }
+// chamfer uf_ratio
+chamfer = { "c" ~ (ufloat)? }
+dual = { "d" }
+expand = { "e" ~ (ufloat)? }
+// gyro uf_ratio, f_height
+gyro = { "g" ~ ( (ufloat)? ~ (separator ~ (float)? )? )? }
+// join uf_ratio
+join = { "j" ~ (ufloat)? }
+// kis f_height, ui_face_arity, b_regular_faces_only
+kis = { "k" ~
+    (
+        (float)?
+        ~
+        (
+            separator
+            ~
+            (uint | uint_array)?
+            ~
+            (
+                separator
+                ~
+                (bool)?
+            )?
+        )?
+    )?
+}
+// medial uf_ratio, f_height, ui_vertex_valence, b_regular_faces_only
+medial = { "M" ~
+    (
+        (ufloat)?
+        ~
+        (
+            separator
+            ~
+            (float)?
+            ~
+            (
+                separator
+                ~
+                (uint | uint_array)?
+                ~
+                (
+                    separator
+                    ~
+                    (bool)?
+                )?
+            )?
+        )?
+    )?
+}
+meta = { "m"  }
+// needle ui_vertex_degree
+needle = { "n" ~ (uint | uint_array)? }
+ortho = { "o" }
+propellor = { "p" }
+quinto = { "q" }
+reflect = { "r" }
+snub = { "s" }
+truncate = { "t" }
+whirl = { "w" }
+zip = { "z" }
+operation = _{
+    ambo |
+    bevel |
+    chamfer |
+    dual |
+    expand |
+    gyro |
+    join |
+    kis |
+    medial |
+    meta |
+    needle |
+    ortho |
+    propellor |
+    quinto |
+    reflect |
+    snub |
+    truncate |
+    whirl |
+    zip
+}
+operation_chain = _{ operation ~ (operation)* }
+conway_notation_string = _{SOI ~ operation_chain ~ base_shape ~ EOI}
+
+
+//command = { operation ~ (num ~("," ~num)*)* }
