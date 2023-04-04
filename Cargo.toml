@@ -2,9 +2,10 @@
 name = "conway-polyhedron-notation-parser"
 version = "0.1.0"
 authors = ["Moritz Moeller <virtualritz@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-pest = "2.1.3"
-pest_derive = "2.1.0"
+miette = { version = "5.7.0", features = ["fancy", "owo-colors"] }
+pest = { version = "2.5.7", features = ["thiserror", "pretty-print"] }
+pest_derive = "2.5.7"
 polyhedron-ops = { path = "../polyhedron-ops", features = [ "obj" ] }
