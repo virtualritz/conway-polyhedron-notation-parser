@@ -1,23 +1,26 @@
-use std::{fmt::Debug, path::Path, str::FromStr};
+use std::{env, fmt::Debug, path::Path, str::FromStr};
 #[macro_use]
 extern crate pest_derive;
 use miette::{IntoDiagnostic, Result};
 use pest::{iterators::Pairs, Parser};
-use polyhedron_ops::prelude::*;
+use polyhedron_ops::*;
 
 #[derive(Parser)]
 #[grammar = "grammar.pest"]
 pub struct ConwayPolyhedronNotationParser;
 
-//const POLY: &str = "g0.2k0.1,[3,4],,{t}b,2T";
-
-const POLY: &str = "b\n\t0.2, , , {t} T";
-
 fn main() -> Result<()> {
+    let poly_string = if let Some(arg) = env::args().collect::<Vec<_>>().get(1) {
+        arg.to_string()
+    } else {
+        eprintln!("No input string provided. Using default `eD` (Rhombicosidodecahedron)");
+        "eD".to_string()
+    };
+
     let mut poly = Polyhedron::new();
 
     let conway_notation_token_tree =
-        ConwayPolyhedronNotationParser::parse(Rule::conway_notation_string, POLY)
+        ConwayPolyhedronNotationParser::parse(Rule::conway_notation_string, &poly_string)
             .into_diagnostic()?;
 
     conway_notation_token_tree.rev().skip(1).for_each(|pair| {
@@ -244,7 +247,7 @@ fn main() -> Result<()> {
     let name = path.as_path().file_stem().unwrap().to_str().unwrap();
 
     assert!(name.ends_with(
-        &POLY
+        &poly_string
             .chars()
             .filter(|c| !c.is_whitespace())
             .collect::<String>()
