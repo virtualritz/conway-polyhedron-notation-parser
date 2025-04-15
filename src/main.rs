@@ -2,7 +2,7 @@ use std::{env, fmt::Debug, path::Path, str::FromStr};
 #[macro_use]
 extern crate pest_derive;
 use miette::{IntoDiagnostic, Result};
-use pest::{iterators::Pairs, Parser};
+use pest::{Parser, iterators::Pairs};
 use polyhedron_ops::*;
 
 #[derive(Parser)]
@@ -246,12 +246,14 @@ fn main() -> Result<()> {
 
     let name = path.as_path().file_stem().unwrap().to_str().unwrap();
 
-    assert!(name.ends_with(
-        &poly_string
-            .chars()
-            .filter(|c| !c.is_whitespace())
-            .collect::<String>()
-    ));
+    assert!(
+        name.ends_with(
+            &poly_string
+                .chars()
+                .filter(|c| !c.is_whitespace())
+                .collect::<String>()
+        )
+    );
 
     Ok(())
 }
